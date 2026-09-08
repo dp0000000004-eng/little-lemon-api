@@ -12,7 +12,7 @@ class Catagory(models.Model):
 class MenuItem(models.Model):
     catagory = models.ForeignKey(Catagory, on_delete=models.CASCADE, related_name="catagory")
     price = models.DecimalField(max_digits=6, decimal_places=2)
-    stock = models.IntegerField()
+    inventory = models.IntegerField()
 
     def __str__(self):
-        return self.catagory
+        return f"{self.catagory}"
