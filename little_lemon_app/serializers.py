@@ -8,4 +8,7 @@ class CatagorySerializer(serializers.ModelSerializer):
         fields = ['id', 'slug', 'title']
 
 
-class 
+class MenuItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MenuItem
+        fields = ['id', 'catagory', 'price', 'stock']
