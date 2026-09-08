@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
     'little_lemon_app',
     'django.contrib.admin',
     'django.contrib.auth',
