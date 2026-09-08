@@ -16,8 +16,33 @@ from django.shortcuts import get_object_or_404
 def menuItemsViews(request):
     if request.method == 'GET':
         items = MenuItem.objects.select_related('catagory').all()
+
+        catagory_name = request.query_params.get('catagory')
+        price_to = request.query_params.get('price')
+        search = request.query_params.get('search')
+        ordering = request.query_params.get('ordering')
+
+
+        if catagory_name:
+            items = items.filter(catagory__title=catagory_name)
+        if price_to:
+            items = items.filter(price=price_to)
+        if search:
+            items = items.filter(catagory__title__istartswith=search)
+        if ordering:
+            if ordering == "reversed__price":
+                items = items.order_by("-price")
+            elif ordering == "reversed__stock":
+                items = items.order_by('-inventory')
+            elif ordering == "reversed__title":
+                items.order_by('-catagory__title')
+            else:
+                items = items.order_by(ordering)
+
+
         itemsSerializer = MenuItemSerializer(items, many=True)
         return Response(itemsSerializer.data)
+    
     if request.method == "POST":
         itemsSerializer = MenuItemSerializer(data=request.data)
         itemsSerializer.is_valid(raise_exception=True)
