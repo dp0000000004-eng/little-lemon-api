@@ -37,7 +37,8 @@ def menuItemsViews(request):
             elif ordering == "reversed__title":
                 items.order_by('-catagory__title')
             else:
-                items = items.order_by(ordering)
+                ordered_list = ordering.split(",")
+                items = items.order_by(*ordered_list)
 
 
         itemsSerializer = MenuItemSerializer(items, many=True)
