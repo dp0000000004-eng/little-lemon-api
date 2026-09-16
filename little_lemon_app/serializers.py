@@ -17,6 +17,7 @@ class MenuItemSerializer(serializers.ModelSerializer):
 
     def validate_title(self, value):
         return bleach.clean(value)
+    
     class Meta:
         model = MenuItem
         fields = ['id', 'catagory', 'price', 'stock', 'price_after_task']
@@ -28,8 +29,11 @@ class MenuItemSerializer(serializers.ModelSerializer):
             "stock":{
                 "source":"inventory",
                 "min_value":0
+            },
+            "price_after_task":{
+                "decimal_places":2
             }
         }
 
     def after_task(self, product:MenuItem):
-        return product.price * Decimal(1.1)
+        return round(product.price * Decimal(1.1), 2)
