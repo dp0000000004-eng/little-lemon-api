@@ -3,16 +3,18 @@ from rest_framework.response import Response
 from rest_framework import response
 from rest_framework.decorators import api_view, renderer_classes
 from .serializers import MenuItemSerializer
-from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
+from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer, TemplateHTMLRenderer
 from .models import MenuItem
 from rest_framework import status
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
+from django.core.paginator import Paginator, EmptyPage
 
 # Create your views here.
 
 
 @api_view(['GET', 'POST'])
-@renderer_classes([ BrowsableAPIRenderer, JSONRenderer])
+@renderer_classes([  JSONRenderer, TemplateHTMLRenderer])
 def menuItemsViews(request):
     if request.method == 'GET':
         items = MenuItem.objects.select_related('catagory').all()
@@ -21,6 +23,8 @@ def menuItemsViews(request):
         price_to = request.query_params.get('price')
         search = request.query_params.get('search')
         ordering = request.query_params.get('ordering')
+        perpage = request.query_params.get('perpage', default=2)
+        page = request.query_params.get('page', default=1)
 
 
         if catagory_name:
@@ -40,9 +44,23 @@ def menuItemsViews(request):
                 ordered_list = ordering.split(",")
                 items = items.order_by(*ordered_list)
 
+        if int(perpage) > 5:
+            return HttpResponseBadRequest(f"Error {HttpResponseBadRequest.status_code} The limit of per page data is 5" )
+
+        paginator = Paginator(items, per_page=perpage)
+        try:
+            items = paginator.page(number=page)
+        except EmptyPage:
+            items = []
+
 
         itemsSerializer = MenuItemSerializer(items, many=True)
-        return Response(itemsSerializer.data)
+        return Response(
+            {
+                "items":itemsSerializer.data
+            },
+            template_name='data.html'
+        )
     
     if request.method == "POST":
         itemsSerializer = MenuItemSerializer(data=request.data)
