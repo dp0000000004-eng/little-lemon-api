@@ -1,11 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import redirect
 from rest_framework.response import Response
 from rest_framework import response
 from rest_framework.decorators import api_view, renderer_classes
-from .serializers import MenuItemSerializer
+from .serializers import MenuItemSerializer, CatagorySerializer
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer, TemplateHTMLRenderer
-from .models import MenuItem
+from .models import MenuItem, Catagory
 from rest_framework import status
+from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator, EmptyPage
@@ -14,7 +15,22 @@ from django.core.paginator import Paginator, EmptyPage
 
 
 @api_view(['GET', 'POST'])
-@renderer_classes([  JSONRenderer, TemplateHTMLRenderer])
+@renderer_classes([BrowsableAPIRenderer, JSONRenderer])
+def catagoryView(request):
+    if request.method == 'GET':
+        category = Catagory.objects.all()
+        categorySerializer = CatagorySerializer(category, many=True)
+        return Response(categorySerializer.data)
+    if request.method == 'POST':
+        postCatagorySerializer = CatagorySerializer(data=request.data, many=True)
+        postCatagorySerializer.is_valid(raise_exception=True)
+        postCatagorySerializer.save()
+        return Response(postCatagorySerializer.data, status.HTTP_201_CREATED)
+
+
+
+@api_view(['GET', 'POST', ])
+@renderer_classes([BrowsableAPIRenderer,  JSONRenderer, TemplateHTMLRenderer])
 def menuItemsViews(request):
     if request.method == 'GET':
         items = MenuItem.objects.select_related('catagory').all()
@@ -63,15 +79,18 @@ def menuItemsViews(request):
         )
     
     if request.method == "POST":
-        itemsSerializer = MenuItemSerializer(data=request.data)
+        itemsSerializer = MenuItemSerializer(data=request.data, many=True)
         itemsSerializer.is_valid(raise_exception=True)
         itemsSerializer.save()
         return Response(itemsSerializer.data, status.HTTP_201_CREATED)
 
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST', 'DELETE'])
 @renderer_classes([JSONRenderer, BrowsableAPIRenderer])
 def singleMenuViews(request, id):
     item = get_object_or_404(MenuItem, pk=id)
     itemSerializer = MenuItemSerializer(item)
+    if request.method == "DELETE":
+        item.delete()
+        return HttpResponse('Item deleted sussesfuly')
     return Response(itemSerializer.data)
