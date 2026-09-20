@@ -5,4 +5,6 @@ urlpatterns = [
     path('menu-items/', views.menuItemsViews, name="menu_items"),
     path('menu-items/<int:id>', views.singleMenuViews, name='singleMenu'),
     path('category/', views.catagoryView),
+    path('data/', views.hardcodedData),
+    path('s-msg/', views.secreate),
 ]
