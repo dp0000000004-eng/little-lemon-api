@@ -10,7 +10,7 @@ from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator, EmptyPage
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import permission_classes
 
 # Create your views here.
@@ -110,7 +110,7 @@ def hardcodedData(request):
 
 
 @api_view()
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def secreate(request):
     return Response(
         {
