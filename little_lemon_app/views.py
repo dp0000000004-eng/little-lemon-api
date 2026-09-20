@@ -10,6 +10,8 @@ from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator, EmptyPage
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
 
 # Create your views here.
 
@@ -94,3 +96,25 @@ def singleMenuViews(request, id):
         item.delete()
         return HttpResponse('Item deleted sussesfuly')
     return Response(itemSerializer.data)
+
+
+@api_view(['GET', 'POST'])
+@renderer_classes([BrowsableAPIRenderer, JSONRenderer])
+def hardcodedData(request):
+    data = {
+        "name":"Israt",
+        "branch":"CE&IoT"
+    }
+
+    return Response(data)
+
+
+@api_view()
+@permission_classes([IsAuthenticated])
+def secreate(request):
+    return Response(
+        {
+            "name":"deba",
+            "age":18
+        }
+    )
