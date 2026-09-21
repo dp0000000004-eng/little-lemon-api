@@ -9,5 +9,6 @@ urlpatterns = [
     path('category/', views.catagoryView),
     path('data/', views.hardcodedData),
     path('s-msg/', views.secreate),
-    path('auth_create', obtain_auth_token),
+    path('auth-token-create/', obtain_auth_token),
+    path('manager/', views.manager_only),
 ]
