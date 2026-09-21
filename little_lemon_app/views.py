@@ -118,3 +118,17 @@ def secreate(request):
             "age":18
         }
     )
+
+@api_view()
+@permission_classes([IsAuthenticated])
+def manager_only(request):
+    if request.user.groups.filter(name="Manager").exists():
+        return Response(
+            {
+                "message":"This only show to manager"
+            }
+        )
+    else:
+        return Response(
+            {"mesage":"You are not authorized"}, status.HTTP_403_FORBIDDEN
+        )
