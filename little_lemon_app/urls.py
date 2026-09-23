@@ -3,6 +3,7 @@ from . import views
 
 from rest_framework.authtoken.views import obtain_auth_token
 
+
 urlpatterns = [
     path('menu-items/', views.menuItemsViews, name="menu_items"),
     path('menu-items/<int:id>', views.singleMenuViews, name='singleMenu'),
@@ -11,4 +12,6 @@ urlpatterns = [
     path('s-msg/', views.secreate),
     path('auth-token-create/', obtain_auth_token),
     path('manager/', views.manager_only),
+    path('anon/', views.anon_user),
+    path('user/', views.user_client)
 ]

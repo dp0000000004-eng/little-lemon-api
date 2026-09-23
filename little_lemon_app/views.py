@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from rest_framework.response import Response
 from rest_framework import response
-from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.decorators import api_view, throttle_classes, renderer_classes
 from .serializers import MenuItemSerializer, CatagorySerializer
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer, TemplateHTMLRenderer
 from .models import MenuItem, Catagory
@@ -12,6 +12,9 @@ from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator, EmptyPage
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import permission_classes
+from rest_framework.throttling import AnonRateThrottle
+from rest_framework.throttling import UserRateThrottle
+from .throttle import TenMinutesThrottle
 
 # Create your views here.
 
@@ -132,3 +135,24 @@ def manager_only(request):
         return Response(
             {"mesage":"You are not authorized"}, status.HTTP_403_FORBIDDEN
         )
+
+
+
+@api_view()
+@throttle_classes([AnonRateThrottle])
+def anon_user(request):
+    return Response(
+        {
+            "message":"This is for anon client"
+        }
+    )
+
+@api_view()
+@throttle_classes([TenMinutesThrottle])
+@permission_classes([IsAuthenticated])
+def user_client(request):
+    return Response(
+        {
+            "message":"This is for Auth User client"
+        }
+    )
