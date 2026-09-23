@@ -134,4 +134,9 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES":(
         'rest_framework.authentication.TokenAuthentication',
     ),
+    "DEFAULT_THROTTLE_RATES":{
+        'anon':'2/minute',
+        'user':'10/minute',
+        'ten':'20/minute'
+    }
 }
