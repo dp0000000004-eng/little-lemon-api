@@ -14,7 +14,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import permission_classes
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.throttling import UserRateThrottle
-from .throttle import TenMinutesThrottle
+from .throttle import TenMinutesThrottle 
 
 # Create your views here.
 
