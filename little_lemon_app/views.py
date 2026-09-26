@@ -14,6 +14,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import permission_classes
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.throttling import UserRateThrottle
+from .paginators import PaginatorPageLimt as Pagination
 from .throttle import TenMinutesThrottle 
 
 # Create your views here.
@@ -65,8 +66,9 @@ def menuItemsViews(request):
                 ordered_list = ordering.split(",")
                 items = items.order_by(*ordered_list)
 
-        if int(perpage) > 5:
-            return HttpResponseBadRequest(f"Error {HttpResponseBadRequest.status_code} The limit of per page data is 5" )
+
+        if int(perpage) > Pagination.page_limit:
+            return HttpResponseBadRequest(f"Error {HttpResponseBadRequest.status_code} The limit of per page data is {Pagination.page_limit}" )
 
         paginator = Paginator(items, per_page=perpage)
         try:
@@ -103,6 +105,8 @@ def singleMenuViews(request, id):
 
 @api_view(['GET', 'POST'])
 @renderer_classes([BrowsableAPIRenderer, JSONRenderer])
+@permission_classes([IsAdminUser])
+@throttle_classes([UserRateThrottle])
 def hardcodedData(request):
     data = {
         "name":"Israt",
@@ -121,6 +125,8 @@ def secreate(request):
             "age":18
         }
     )
+
+
 
 @api_view()
 @permission_classes([IsAuthenticated])
