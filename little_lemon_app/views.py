@@ -15,9 +15,12 @@ from rest_framework.decorators import permission_classes
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.throttling import UserRateThrottle
 from .paginators import PaginatorPageLimt as Pagination
-from .throttle import TenMinutesThrottle 
+from django.contrib.auth.models import Group, User
+from .throttle import TenMinutesThrottle , FiftyMinuteThrottle
 
 # Create your views here.
+
+
 
 
 @api_view(['GET', 'POST'])
@@ -32,6 +35,7 @@ def catagoryView(request):
         postCatagorySerializer.is_valid(raise_exception=True)
         postCatagorySerializer.save()
         return Response(postCatagorySerializer.data, status.HTTP_201_CREATED)
+
 
 
 
@@ -92,6 +96,8 @@ def menuItemsViews(request):
         return Response(itemsSerializer.data, status.HTTP_201_CREATED)
 
 
+
+
 @api_view(['GET', 'POST', 'DELETE'])
 @renderer_classes([JSONRenderer, BrowsableAPIRenderer])
 def singleMenuViews(request, id):
@@ -103,10 +109,12 @@ def singleMenuViews(request, id):
     return Response(itemSerializer.data)
 
 
+
+
 @api_view(['GET', 'POST'])
 @renderer_classes([BrowsableAPIRenderer, JSONRenderer])
 @permission_classes([IsAdminUser])
-@throttle_classes([UserRateThrottle])
+@throttle_classes([FiftyMinuteThrottle])
 def hardcodedData(request):
     data = {
         "name":"Israt",
@@ -114,6 +122,8 @@ def hardcodedData(request):
     }
 
     return Response(data)
+
+
 
 
 @api_view()
@@ -153,6 +163,7 @@ def anon_user(request):
         }
     )
 
+
 @api_view()
 @throttle_classes([TenMinutesThrottle])
 @permission_classes([IsAuthenticated])
@@ -162,3 +173,22 @@ def user_client(request):
             "message":"This is for Auth User client"
         }
     )
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
+def manage(request):
+    username = request.data['username']
+    managers = Group.objects.get(name='Manager')
+    if username:
+        if request.method == 'POST':
+            user = get_object_or_404(User, username=username)
+            managers.user_set.add(user)
+            return Response({"message":"ok"})
+        if request.method == 'DELETE':
+            user = get_object_or_404(User, username=username)
+            managers.user_set.remove(user)
+            return Response({'message':'done'})
+
+    return Response({'message':'No data provided'})

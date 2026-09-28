@@ -13,5 +13,6 @@ urlpatterns = [
     path('auth-token-create/', obtain_auth_token),
     path('manager/', views.manager_only),
     path('anon/', views.anon_user),
-    path('user/', views.user_client)
+    path('user/', views.user_client),
+    path('manager/manage/', views.manage),
 ]
