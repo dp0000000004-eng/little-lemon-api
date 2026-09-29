@@ -4,7 +4,7 @@ from django.test import TestCase
 
 import requests
 
-token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzkwNDM1NjExLCJpYXQiOjE3OTA0MzUzMTEsImp0aSI6ImNlOGFiMjlkM2Y3ZDQ1YmI5NzFkMWIwOWU5Y2M0MTNhIiwidXNlcl9pZCI6IjEifQ.njfHCFiYK_ZjlJdDrgYkojMofQSmwbXXObgtTgZgOBk"
+token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzkwNTAwNTU1LCJpYXQiOjE3OTA1MDAyNTUsImp0aSI6ImU1M2EyOTJlYzU5MzQ1NGE4MmVlYzFlNjFhZWE3OTc5IiwidXNlcl9pZCI6IjEifQ.LX-3Q6R2cev5aHMpLl73BX-Asu1c9nRFOdTHZeyC-IM"
 
 headers = {
     "Authorization": f"Bearer {token}",
