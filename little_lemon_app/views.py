@@ -117,7 +117,7 @@ def singleMenuViews(request, id):
 @throttle_classes([FiftyMinuteThrottle])
 def hardcodedData(request):
     data = {
-        "name":"Israt",
+        "name":"deba",
         "branch":"CE&IoT"
     }
 
